@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 file_name = sys.argv[1]
 agg_num = int(sys.argv[2])
 figure_name = file_name[:-4]
-# MODIFIED
-path = '/users/CS0522/outputs/figures/'
 data = {'user':[0], 'nice':[0], 'system':[0], 'iowait':[0], 'steal':[0], 'idle':[0]}
 ignore_key = ['code', 'swap']
 tot_read = 0
@@ -75,8 +73,7 @@ plt.xlabel('Second')
 plt.ylabel('Utilization (%)')
 plt.legend()
 # plt.show()
-# MODIFIED
-plt.savefig(path + figure_name + '-cpu.jpg')
+plt.savefig(figure_name + '-cpu.jpg')
 plt.close()
 
 plt.figure()
@@ -103,8 +100,7 @@ plt.yticks(fontsize=fs)
 plt.ylim([200, 700])
 plt.legend()
 # plt.show()
-# MODIFIED
-plt.savefig(path + figure_name + '-disk.pdf')
+plt.savefig(figure_name + '-disk.pdf')
 plt.close()
 
 print('tot_read:', tot_read, 'total_write:', tot_write)
