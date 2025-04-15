@@ -13,7 +13,10 @@ shards = int(sys.argv[2])
 runtime = int(sys.argv[3]) / 1000
 # workload = sys.argv[4]
 
-nethogs_fname = 'nethogs-' + suffix + '.out'
+# MODIFIED
+path = '/users/CS0522/outputs/'
+
+nethogs_fname = path + 'nethogs-' + suffix + '.out'
 
 grpc_usage = 0.0
 # times = 0
@@ -41,7 +44,8 @@ with open('LOAD_PHASE_SST_MARK_%s.out' % suffix, 'r') as f:
 
 sst_cnt = 0
 for s in range(shards):
-    log_fname = 'LOG-shard-' + str(s) + '-' + suffix
+    # MODIFIED
+    log_fname = path + 'LOG-shard-' + str(s) + '-' + suffix
     with open(log_fname, 'r') as f:
         for line in reversed(f.readlines()):
             if 'Shipped SST file' in line:

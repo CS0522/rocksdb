@@ -111,4 +111,4 @@ rubble/LOG*
 *.svg
 *.perf
 *.folded
-
+*.log

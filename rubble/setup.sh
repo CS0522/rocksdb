@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+# set -x
 
 if [ $# -lt 6 ]; then
     echo "Usage: bash setup.sh username is_mlnx(0/1) shard_num IP-1 IP-2 IP-3 ..."

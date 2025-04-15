@@ -5,6 +5,8 @@ file_name = sys.argv[1]
 agg_num = int(sys.argv[2])
 cpu_num = int(sys.argv[3])
 figure_name = file_name[:-4]
+# MODIFIED
+path = '/users/CS0522/outputs/figures/'
 data = {'user':[], 'system':[], 'idle':[], 'wait':[], 'steal':[], 'read':[], 'write':[]}
 
 agg_cnt = 0
@@ -50,7 +52,8 @@ plt.xlabel('Second')
 plt.ylabel('Utilization (%)')
 plt.ylim([0, cpu_num * 100])
 plt.legend()
-plt.savefig(figure_name + '-cpu.pdf')
+# MODIFIED
+plt.savefig(path + figure_name + '-cpu.pdf')
 plt.close()
 
 plt.figure()
@@ -61,5 +64,6 @@ plt.xlabel('Second')
 plt.ylabel('Throughput (MB/s)')
 plt.ylim([0, 1000])
 plt.legend()
-plt.savefig(figure_name + '-disk.pdf')
+# MODIFIED
+plt.savefig(path + figure_name + '-disk.pdf')
 plt.close()
