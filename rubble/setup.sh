@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -x
+set -x
 
 if [ $# -lt 6 ]; then
     echo "Usage: bash setup.sh username is_mlnx(0/1) shard_num IP-1 IP-2 IP-3 ..."
@@ -92,6 +92,8 @@ do
     fi
     ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/${script_name} ${log}; nohup bash ${script_name} ${param} ${log} &"
 done
+# 这里老是会被阻塞住，得手动再关闭一次 Server 节点
+# 修改为只检测第一个节点是否关机
 check_connectivity $ssh_down $rubble_node
 check_connectivity $ssh_up   $rubble_node
 if [ $is_mlnx -eq 0 ]; then
