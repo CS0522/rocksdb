@@ -27,7 +27,9 @@ partition_disk() {
     local shard_num=$1
     local rf=$2
 
-    local pool_size=100
+    # MODIFIED: 100G --> 200G
+    # TODO: 200G 是否足够
+    local pool_size=200
     local data_part_size=$(( 50 + shard_num * 16 ))
     local remote_node_num=$(( rf - 1 ))
     local shard_per_node=$(( shard_num / rf ))
@@ -138,7 +140,9 @@ setup_rocksdb() {
         then
             local primary_node=$( sid_to_nid $sid $rf )
             local shard_dir=${SST_PATH}/node-${primary_node}/shard-${sid}
-            bash create-sst-pool.sh 16777216 1 5000 ${shard_dir} ${nid} ${sid} > /dev/null 2>&1
+            # MODIFIED: 5000 --> 2500
+            # TODO: 这里 create-sst-pool 的 pool-size 是否需要调整？
+            bash create-sst-pool.sh 67108864 1 2500 ${shard_dir} ${nid} ${sid} > /dev/null 2>&1
         fi
     done
     wait
