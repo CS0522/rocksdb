@@ -21,8 +21,67 @@ install_dependencies() {
 # └─nvme0n1p3
 # /dev/nvme0n1p1 will be mounted to /mnt/data, and /dev/nvme0n1p{2..N} will 
 # be mounted to /mnt/sst/node-x, which holds SST files from node-x in Rubble
-partition_disk() {
-    lsblk
+# partition_disk() {
+#     lsblk
+
+#     local shard_num=$1
+#     local rf=$2
+
+#     local pool_size=100
+#     local data_part_size=$(( 50 + shard_num * 16 ))
+#     local remote_node_num=$(( rf - 1 ))
+#     local shard_per_node=$(( shard_num / rf ))
+#     local sst_part_size=$(( shard_per_node * pool_size ))
+    
+#     wipefs $nvme_dev
+
+#     local unit_str="G
+#     "
+
+#     local partition_str="n
+#     p
+
+
+#     +"
+
+#     local sync_str="w
+#     "
+
+#     local cmd_str="$partition_str"${data_part_size}"$unit_str"
+
+#     for (( i=0; i<$remote_node_num; i++ ))
+#     do
+#         cmd_str="${cmd_str}${partition_str}"${sst_part_size}"${unit_str}"
+#     done
+#     cmd_str="${cmd_str}${sync_str}"
+
+#     echo "$cmd_str" | fdisk $nvme_dev
+    
+#     while [[ -z $(lsblk | grep nvme0n1p2) ]]; do
+#         sleep 1
+#     done
+
+#     for dev in `ls ${nvme_dev}p*`
+#     do
+#         yes | mkfs.ext4 $dev
+#     done
+
+#     mkdir $DATA_PATH $SST_PATH
+#     mount_local_disk $rf ""
+
+#     lsblk
+# }
+
+# After this function, the disk will look like:
+# nvme0n1
+# ├─nvme0n1p1
+# ├─nvme0n1p2
+# └─nvme0n1p3
+# /dev/nvme0n1p1 will be mounted to /mnt/data, and /dev/nvme0n1p{2..N} will 
+# be mounted to /mnt/sst/node-x, which holds SST files from node-x in Rubble
+partition_disk()
+{
+    sudo apt install -y nvme-cli
 
     local shard_num=$1
     local rf=$2
@@ -34,34 +93,21 @@ partition_disk() {
     local remote_node_num=$(( rf - 1 ))
     local shard_per_node=$(( shard_num / rf ))
     local sst_part_size=$(( shard_per_node * pool_size ))
-    
-    wipefs $nvme_dev
 
-    local unit_str="G
-    "
-
-    local partition_str="n
-    p
-
-
-    +"
-
-    local sync_str="w
-    "
-
-    local cmd_str="$partition_str"${data_part_size}"$unit_str"
-
-    for (( i=0; i<$remote_node_num; i++ ))
-    do
-        cmd_str="${cmd_str}${partition_str}"${sst_part_size}"${unit_str}"
+    nvme format ${nvme_dev}
+    parted -s ${nvme_dev} mklabel gpt
+    # Create data part
+    parted -s ${nvme_dev} mkpart primary ext4 1MiB ${data_part_size}GiB
+    # Create sst part
+    local start=${data_part_size}
+    for (( i = 0; i < remote_node_num; i++ )); do
+        local end=$(( start + sst_part_size ))
+        parted -s ${nvme_dev} mkpart primary ext4 ${start}GiB ${end}GiB
+        start=${end}
     done
-    cmd_str="${cmd_str}${sync_str}"
 
-    echo "$cmd_str" | fdisk $nvme_dev
-    
-    while [[ -z $(lsblk | grep nvme0n1p2) ]]; do
-        sleep 1
-    done
+    # wait serveral seconds
+    sleep 3
 
     for dev in `ls ${nvme_dev}p*`
     do
