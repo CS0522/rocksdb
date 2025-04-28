@@ -11,7 +11,8 @@ pool_size=$3
 sst_dir=$4
 nid=$5
 sid=$6
-padding=1048576
+# MODIFIED: 1 MiB --> 5MiB
+padding=5242880
 
 mkdir -p $sst_dir
 cd $sst_dir
