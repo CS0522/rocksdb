@@ -60,9 +60,9 @@ rf=$#
 for ip in $rubble_node
 do
     ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/helper.sh ${log};"
-    ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/setup-rubble.sh ${log}; bash setup-rubble.sh ${shard_num} ${rf} ${log}"
+    ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/setup-rubble.sh ${log}; bash setup-rubble.sh ${shard_num} ${rf} ${log}" &
 done
-# wait
+wait
 
 # Step 4: set up NVMeoF
 # Step 4a: adjust iommu
