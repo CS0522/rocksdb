@@ -93,7 +93,7 @@ partition_disk()
     local shard_per_node=$(( shard_num / rf ))
     local sst_part_size=$(( shard_per_node * pool_size ))
 
-    nvme format ${nvme_dev}
+    nvme format -s 1 ${nvme_dev}
     parted -s ${nvme_dev} mklabel gpt
     # Create data part
     parted -s ${nvme_dev} mkpart primary ext4 1MiB ${data_part_size}GiB
