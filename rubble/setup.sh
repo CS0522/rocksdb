@@ -7,7 +7,7 @@ if [ $# -lt 6 ]; then
     exit
 fi
 
-ssh_arg="-o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+ssh_arg="-o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=30"
 ssh_down=255
 ssh_up=0
 
@@ -60,9 +60,9 @@ rf=$#
 for ip in $rubble_node
 do
     ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/helper.sh ${log};"
-    ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/setup-rubble.sh ${log}; bash setup-rubble.sh ${shard_num} ${rf} ${log}" &
+    ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/setup-rubble.sh ${log}; bash setup-rubble.sh ${shard_num} ${rf} ${log}"
 done
-wait
+# wait
 
 # Step 4: set up NVMeoF
 # Step 4a: adjust iommu
