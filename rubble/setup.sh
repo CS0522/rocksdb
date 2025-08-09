@@ -50,7 +50,7 @@ log=">> ycsb_build.log 2>&1"
 ycsb_node=$1
 shift 1
 ssh $ssh_arg root@$ycsb_node "sudo apt update ${log}; yes | sudo apt install maven python3-pip ${log}; sudo pip3 install matplotlib ${log}"
-ssh $ssh_arg root@$ycsb_node "git clone --branch rubble https://github.com/CS0522/YCSB-rubble.git YCSB ${log}; cd YCSB; nohup bash build.sh ${log} &"
+ssh $ssh_arg root@$ycsb_node "git clone --branch rubble https://github.com/CS0522/YCSB-rubbledb.git YCSB ${log}; cd YCSB; nohup bash build.sh ${log} &"
 
 # Step 3: set up Rubble from IP-2 to IP-3
 log=">> rubble_build.log 2>&1"

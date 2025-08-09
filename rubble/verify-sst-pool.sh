@@ -15,7 +15,8 @@ pool_size=$3
 shard_num=$4
 rf=$5
 recreate=$6
-file_size=$(( target_file_size_base + 1048576 ))
+# 1MiB --> 5MiB
+file_size=$(( target_file_size_base + 5242880 ))
 local_nid=$( get_nid )
 res="Clean"
 

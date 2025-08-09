@@ -79,6 +79,10 @@ install_dependencies() {
 # └─nvme0n1p3
 # /dev/nvme0n1p1 will be mounted to /mnt/data, and /dev/nvme0n1p{2..N} will 
 # be mounted to /mnt/sst/node-x, which holds SST files from node-x in Rubble
+# 1个shard的话，那么节点1分区成node2、node3，每个分区下有1个shard，
+# 每个shard的池大小为N。所以只要2N < 1.5T即可。其中 N 必须要 >= 64MiB * 5000
+# 2个shard的话，那么节点1分区成node2、node3，每个分区下有2个shard，
+# 每个shard的池大小为N。所以只要4N < 1.5T即可。其中 N 必须要 >= 64MiB * 5000
 partition_disk()
 {
     sudo apt install -y nvme-cli
@@ -87,7 +91,8 @@ partition_disk()
     local rf=$2
 
     # MODIFIED: 100G --> 400G
-    local pool_size=200
+    # pool_size 指的是每个 shard 的池大小
+    local pool_size=400
     local data_part_size=$(( 50 + shard_num * 16 ))
     local remote_node_num=$(( rf - 1 ))
     local shard_per_node=$(( shard_num / rf ))
@@ -186,7 +191,7 @@ setup_rocksdb() {
             local primary_node=$( sid_to_nid $sid $rf )
             local shard_dir=${SST_PATH}/node-${primary_node}/shard-${sid}
             # MODIFIED: sst_size: 16 MiB --> 64 MiB
-            bash create-sst-pool.sh 67108864 1 2500 ${shard_dir} ${nid} ${sid} > /dev/null 2>&1
+            bash create-sst-pool.sh 67108864 1 5000 ${shard_dir} ${nid} ${sid} > /dev/null 2>&1
         fi
     done
     wait
