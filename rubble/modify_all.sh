@@ -36,11 +36,14 @@ function upload_config_ini()
     ssh ${ssh_arg} ${username}@${server} << ENDSSH
       sudo rm -rf /mnt/data/rocksdb/rubble/rubble_16gb_config.ini
       sudo rm -rf /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
+      cd /mnt/data/rocksdb/rubble
+      sudo wget https://raw.githubusercontent.com/CS0522/rocksdb-rubbledb/rubble/rubble/rubble_16gb_config.ini
+      sudo wget https://raw.githubusercontent.com/CS0522/rocksdb-rubbledb/rubble/rubble/rubble_16gb_config_tail.ini
 		  exit
 ENDSSH
     # upload
-    scp ${scp_arg} ./rubble_16gb_config.ini ${username}@${server}:/mnt/data/rocksdb/rubble
-    scp ${scp_arg} ./rubble_16gb_config_tail.ini ${username}@${server}:/mnt/data/rocksdb/rubble
+    # scp ${scp_arg} ./rubble_16gb_config.ini ${username}@${server}:/mnt/data/rocksdb/rubble
+    # scp ${scp_arg} ./rubble_16gb_config_tail.ini ${username}@${server}:/mnt/data/rocksdb/rubble
   done
 }
 
