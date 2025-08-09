@@ -21,56 +21,56 @@ install_dependencies() {
 # └─nvme0n1p3
 # /dev/nvme0n1p1 will be mounted to /mnt/data, and /dev/nvme0n1p{2..N} will 
 # be mounted to /mnt/sst/node-x, which holds SST files from node-x in Rubble
-# partition_disk() {
-#     lsblk
+partition_disk() {
+    lsblk
 
-#     local shard_num=$1
-#     local rf=$2
+    local shard_num=$1
+    local rf=$2
 
-#     local pool_size=100
-#     local data_part_size=$(( 50 + shard_num * 16 ))
-#     local remote_node_num=$(( rf - 1 ))
-#     local shard_per_node=$(( shard_num / rf ))
-#     local sst_part_size=$(( shard_per_node * pool_size ))
+    local pool_size=400
+    local data_part_size=$(( 50 + shard_num * 16 ))
+    local remote_node_num=$(( rf - 1 ))
+    local shard_per_node=$(( shard_num / rf ))
+    local sst_part_size=$(( shard_per_node * pool_size ))
     
-#     wipefs $nvme_dev
+    wipefs $nvme_dev
 
-#     local unit_str="G
-#     "
+    local unit_str="G
+    "
 
-#     local partition_str="n
-#     p
+    local partition_str="n
+    p
 
 
-#     +"
+    +"
 
-#     local sync_str="w
-#     "
+    local sync_str="w
+    "
 
-#     local cmd_str="$partition_str"${data_part_size}"$unit_str"
+    local cmd_str="$partition_str"${data_part_size}"$unit_str"
 
-#     for (( i=0; i<$remote_node_num; i++ ))
-#     do
-#         cmd_str="${cmd_str}${partition_str}"${sst_part_size}"${unit_str}"
-#     done
-#     cmd_str="${cmd_str}${sync_str}"
+    for (( i=0; i<$remote_node_num; i++ ))
+    do
+        cmd_str="${cmd_str}${partition_str}"${sst_part_size}"${unit_str}"
+    done
+    cmd_str="${cmd_str}${sync_str}"
 
-#     echo "$cmd_str" | fdisk $nvme_dev
+    echo "$cmd_str" | fdisk $nvme_dev
     
-#     while [[ -z $(lsblk | grep nvme0n1p2) ]]; do
-#         sleep 1
-#     done
+    while [[ -z $(lsblk | grep nvme0n1p2) ]]; do
+        sleep 1
+    done
 
-#     for dev in `ls ${nvme_dev}p*`
-#     do
-#         yes | mkfs.ext4 $dev
-#     done
+    for dev in `ls ${nvme_dev}p*`
+    do
+        yes | mkfs.ext4 $dev
+    done
 
-#     mkdir $DATA_PATH $SST_PATH
-#     mount_local_disk $rf ""
+    mkdir $DATA_PATH $SST_PATH
+    mount_local_disk $rf ""
 
-#     lsblk
-# }
+    lsblk
+}
 
 # After this function, the disk will look like:
 # nvme0n1
@@ -83,46 +83,46 @@ install_dependencies() {
 # 每个shard的池大小为N。所以只要2N < 1.5T即可。其中 N 必须要 >= 64MiB * 5000
 # 2个shard的话，那么节点1分区成node2、node3，每个分区下有2个shard，
 # 每个shard的池大小为N。所以只要4N < 1.5T即可。其中 N 必须要 >= 64MiB * 5000
-partition_disk()
-{
-    sudo apt install -y nvme-cli
+# partition_disk()
+# {
+#     sudo apt install -y nvme-cli
 
-    local shard_num=$1
-    local rf=$2
+#     local shard_num=$1
+#     local rf=$2
 
-    # MODIFIED: 100G --> 400G
-    # pool_size 指的是每个 shard 的池大小
-    local pool_size=400
-    local data_part_size=$(( 50 + shard_num * 16 ))
-    local remote_node_num=$(( rf - 1 ))
-    local shard_per_node=$(( shard_num / rf ))
-    local sst_part_size=$(( shard_per_node * pool_size ))
+#     # MODIFIED: 100G --> 400G
+#     # pool_size 指的是每个 shard 的池大小
+#     local pool_size=400
+#     local data_part_size=$(( 50 + shard_num * 16 ))
+#     local remote_node_num=$(( rf - 1 ))
+#     local shard_per_node=$(( shard_num / rf ))
+#     local sst_part_size=$(( shard_per_node * pool_size ))
 
-    nvme format -s 1 ${nvme_dev}
-    parted -s ${nvme_dev} mklabel gpt
-    # Create data part
-    parted -s ${nvme_dev} mkpart primary ext4 1MiB ${data_part_size}GiB
-    # Create sst part
-    local start=${data_part_size}
-    for (( i = 0; i < remote_node_num; i++ )); do
-        local end=$(( start + sst_part_size ))
-        parted -s ${nvme_dev} mkpart primary ext4 ${start}GiB ${end}GiB
-        start=${end}
-    done
+#     nvme format -s 1 ${nvme_dev}
+#     parted -s ${nvme_dev} mklabel gpt
+#     # Create data part
+#     parted -s ${nvme_dev} mkpart primary ext4 1MiB ${data_part_size}GiB
+#     # Create sst part
+#     local start=${data_part_size}
+#     for (( i = 0; i < remote_node_num; i++ )); do
+#         local end=$(( start + sst_part_size ))
+#         parted -s ${nvme_dev} mkpart primary ext4 ${start}GiB ${end}GiB
+#         start=${end}
+#     done
 
-    # wait serveral seconds
-    sleep 3
+#     # wait serveral seconds
+#     sleep 3
 
-    for dev in `ls ${nvme_dev}p*`
-    do
-        yes | mkfs.ext4 $dev
-    done
+#     for dev in `ls ${nvme_dev}p*`
+#     do
+#         yes | mkfs.ext4 $dev
+#     done
 
-    mkdir $DATA_PATH $SST_PATH
-    mount_local_disk $rf ""
+#     mkdir $DATA_PATH $SST_PATH
+#     mount_local_disk $rf ""
 
-    lsblk
-}
+#     lsblk
+# }
 
 setup_grpc() {
     local GPRC_VERSION=1.34.0

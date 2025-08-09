@@ -2,7 +2,7 @@
 
 set -x
 
-start_from_step=4
+start_from_step=3
 skip_install_driver=1
 
 echo "Start from step: ${start_from_step}"
@@ -71,7 +71,7 @@ if [ "${start_from_step}" -le 3 ]; then
     do
         ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/helper.sh ${log};"
         ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/setup-rubble.sh ${log}; bash setup-rubble.sh ${shard_num} ${rf} ${log}"
-        # ssh $ssh_arg root@$ip "umount /mnt/data"
+        ssh $ssh_arg root@$ip "umount /mnt/data"
     done
 # wait
 fi

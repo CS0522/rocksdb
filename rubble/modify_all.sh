@@ -39,6 +39,7 @@ function upload_config_ini()
       cd /mnt/data/rocksdb/rubble
       sudo wget https://raw.githubusercontent.com/CS0522/rocksdb-rubbledb/rubble/rubble/rubble_16gb_config.ini
       sudo wget https://raw.githubusercontent.com/CS0522/rocksdb-rubbledb/rubble/rubble/rubble_16gb_config_tail.ini
+      sudo sed -i "s/max_write_buffer_number=[0-9]\+/max_write_buffer_number=2/g" /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
 		  exit
 ENDSSH
     # upload
@@ -47,4 +48,15 @@ ENDSSH
   done
 }
 
-upload_config_ini
+function update_config_ini()
+{
+  for server in ${servers[@]}; do
+    ssh ${ssh_arg} ${username}@${server} << ENDSSH
+      sudo sed -i "s/max_write_buffer_number=[0-9]\+/max_write_buffer_number=128/g" /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
+		  exit
+ENDSSH
+  done
+}
+
+# upload_config_ini
+update_config_ini
