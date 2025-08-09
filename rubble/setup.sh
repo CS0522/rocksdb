@@ -30,7 +30,7 @@ check_connectivity() {
 username=$1
 is_mlnx=$2
 shard_num=$3
-repo="https://raw.githubusercontent.com/CS0522/rocksdb"
+repo="https://raw.githubusercontent.com/CS0522/rocksdb-rubbledb"
 branch="rubble"
 script_path="rubble"
 
