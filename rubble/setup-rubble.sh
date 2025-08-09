@@ -165,7 +165,7 @@ setup_rocksdb() {
     
     cd ${DATA_PATH}
 
-    git clone --branch rubble https://github.com/CS0522/rocksdb.git
+    git clone --branch rubble https://github.com/CS0522/rocksdb-rubbledb.git rocksdb
 
     cd rocksdb
 

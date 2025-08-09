@@ -5,6 +5,8 @@ if [ $# != 6 ]; then
     exit
 fi
 
+set -x
+
 target_file_size_base=$1
 max_num_mems_in_flush=$2
 pool_size=$3
