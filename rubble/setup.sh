@@ -70,10 +70,9 @@ if [ "${start_from_step}" -le 3 ]; then
     for ip in $rubble_node
     do
         ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/helper.sh ${log};"
-        ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/setup-rubble.sh ${log}; bash setup-rubble.sh ${shard_num} ${rf} ${log}"
-        ssh $ssh_arg root@$ip "umount /mnt/data"
+        ssh $ssh_arg root@$ip "wget ${repo}/${branch}/${script_path}/setup-rubble.sh ${log}; bash setup-rubble.sh ${shard_num} ${rf} ${log}; umount /mnt/data" &
     done
-# wait
+    wait
 fi
 
 # Step 4: set up NVMeoF

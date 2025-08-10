@@ -53,12 +53,12 @@ function update_config_ini()
   for server in ${servers[@]}; do
     ssh ${ssh_arg} ${username}@${server} << ENDSSH
       sudo sed -i "s/max_write_buffer_number=[0-9]\+/max_write_buffer_number=64/g" /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
-      sudo sed -i "s/max_background_jobs=[0-9]\+/max_background_jobs=4/g" /mnt/data/rocksdb/rubble/rubble_16gb_config.ini
-      sudo sed -i "s/max_background_flushes=[0-9]\+/max_background_flushes=1/g" /mnt/data/rocksdb/rubble/rubble_16gb_config.ini
-      sudo sed -i "s/max_background_compactions=[0-9]\+/max_background_compactions=3/g" /mnt/data/rocksdb/rubble/rubble_16gb_config.ini
-      sudo sed -i "s/max_background_jobs=[0-9]\+/max_background_jobs=4/g" /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
-      sudo sed -i "s/max_background_flushes=[0-9]\+/max_background_flushes=1/g" /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
-      sudo sed -i "s/max_background_compactions=[0-9]\+/max_background_compactions=3/g" /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
+      sudo sed -i "s/max_background_jobs=[0-9]\+/max_background_jobs=8/g" /mnt/data/rocksdb/rubble/rubble_16gb_config.ini
+      sudo sed -i "s/max_background_flushes=[0-9]\+/max_background_flushes=2/g" /mnt/data/rocksdb/rubble/rubble_16gb_config.ini
+      sudo sed -i "s/max_background_compactions=[0-9]\+/max_background_compactions=6/g" /mnt/data/rocksdb/rubble/rubble_16gb_config.ini
+      sudo sed -i "s/max_background_jobs=[0-9]\+/max_background_jobs=8/g" /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
+      sudo sed -i "s/max_background_flushes=[0-9]\+/max_background_flushes=2/g" /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
+      sudo sed -i "s/max_background_compactions=[0-9]\+/max_background_compactions=6/g" /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
 		  exit
 ENDSSH
   done
