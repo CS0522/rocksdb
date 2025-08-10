@@ -474,7 +474,8 @@ void RubbleKvServiceImpl::HandleSingleOp(SingleOp* singleOp, Forwarder* forwarde
   SingleOpReply* singleOpReply;
   OpReply* reply = (OpReply*)singleOp->reply_ptr();
   rocksdb::WriteOptions wo = rocksdb::WriteOptions();
-  wo.disableWAL = true;
+  // MODIFIED: true --> false
+  wo.disableWAL = false;
   int iterations = 0;
   int record_cnt;
   rocksdb::ReadOptions ro = rocksdb::ReadOptions(/*verify_checksums*/true, /*fill_cache*/true);
