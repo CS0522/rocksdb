@@ -2,7 +2,7 @@
 
 set -x
 
-start_from_step=3
+start_from_step=2
 skip_install_driver=1
 
 echo "Start from step: ${start_from_step}"
