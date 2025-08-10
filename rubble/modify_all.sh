@@ -30,7 +30,7 @@ echo ''
 ssh_arg="-o ConnectTimeout=10 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=30"
 scp_arg="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
-function upload_config_ini()
+function download_config_ini()
 {
   for server in ${servers[@]}; do
     ssh ${ssh_arg} ${username}@${server} << ENDSSH
@@ -42,9 +42,6 @@ function upload_config_ini()
       sudo sed -i "s/max_write_buffer_number=[0-9]\+/max_write_buffer_number=2/g" /mnt/data/rocksdb/rubble/rubble_16gb_config_tail.ini
 		  exit
 ENDSSH
-    # upload
-    # scp ${scp_arg} ./rubble_16gb_config.ini ${username}@${server}:/mnt/data/rocksdb/rubble
-    # scp ${scp_arg} ./rubble_16gb_config_tail.ini ${username}@${server}:/mnt/data/rocksdb/rubble
   done
 }
 
@@ -64,5 +61,32 @@ ENDSSH
   done
 }
 
-# upload_config_ini
-update_config_ini
+function update_other_file()
+{
+  for server in ${servers[@]}; do
+    ssh ${ssh_arg} ${username}@${server} << ENDSSH
+      sudo sed -i "s/\(wo\.disableWAL\s*=\s*\)true;/\1false;/g" /mnt/data/rocksdb/rubble/rubble_sync_server.cc
+ENDSSH
+  done
+}
+
+function clear_all_results()
+{
+  ssh ${ssh_arg} ${username}@${client} << ENDSSH
+    sudo rm -rf /root/YCSB/*.out
+    sudo rm -rf /users/${username}/outputs
+    sudo rm -rf /users/${username}/workload*
+ENDSSH
+
+  for server in ${servers[@]}; do
+    ssh ${ssh_arg} ${username}@${server} << ENDSSH
+      sudo rm -rf /mnt/data/rocksdb/rubble/*.out
+      sudo rm -rf /users/${username}/outputs
+ENDSSH
+  done
+}
+
+# download_config_ini
+# update_config_ini
+# update_other_file
+clear_all_results
