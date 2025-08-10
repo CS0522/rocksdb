@@ -2,8 +2,8 @@
 
 set -x
 
-start_from_step=2
-skip_install_driver=1
+start_from_step=1
+skip_install_driver=0
 
 echo "Start from step: ${start_from_step}"
 echo "Skip install driver: ${skip_install_driver}"
