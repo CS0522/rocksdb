@@ -1,15 +1,17 @@
 #!/bin/bash
 
-if [ $# -lt 2 ]; then
-    echo "Usage: bash save-result.sh shard_num suffix"
+# 新增 username
+if [ $# -lt 3 ]; then
+    echo "Usage: bash save-result.sh shard_num suffix username"
     exit
 fi
 
 shard_num=$1
 suffix=$2
+username=$3
 
 # add output directory
-output_dir="/users/CS0522/outputs"
+output_dir="/users/${username}/outputs"
 
 cp dstat.csv ${output_dir}/dstat-${suffix}.csv
 cp iostat.out ${output_dir}/iostat-${suffix}.out

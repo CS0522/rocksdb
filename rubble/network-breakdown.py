@@ -2,8 +2,9 @@
 
 import sys
 
-if len(sys.argv) != 4:
-    print('usage: python3 network-breakdown.py suffix shards runtime')
+# 新增 username
+if len(sys.argv) != 5:
+    print('usage: python3 network-breakdown.py suffix shards runtime username')
     exit(0)
     
 
@@ -12,9 +13,11 @@ shards = int(sys.argv[2])
 # original runtime is in ms
 runtime = int(sys.argv[3]) / 1000
 # workload = sys.argv[4]
+# 新增 username
+username = sys.argv[4]
 
 # MODIFIED
-path = '/users/CS0522/outputs/'
+path = f'/users/{username}/outputs/'
 
 nethogs_fname = path + 'nethogs-' + suffix + '.out'
 
